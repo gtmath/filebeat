@@ -3,7 +3,7 @@ name: Filebeat v7 - Build and Scan
 on:
   push:
     branches:
-      - 7.17
+      - 7.*
 
 defaults:
   run:
@@ -15,6 +15,7 @@ env:
 jobs:
 
   push:
+    name: Build and Scan of v7
     runs-on: ubuntu-latest
     permissions:
       packages: write
