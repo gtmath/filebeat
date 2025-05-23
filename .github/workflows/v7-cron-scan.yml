@@ -3,7 +3,7 @@ name: Filebeat v7 - Scan Latest Image
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  "10 16 * * *"
+    - cron:  "0 16 * * *"
 
 defaults:
   run:
@@ -15,7 +15,7 @@ env:
 jobs:
 
   scan:
-    name: Weekly Scan of Latest v7 Tag
+    name: Daily Scan of Latest v7 Tag
     runs-on: ubuntu-latest
     permissions:
       packages: read
@@ -24,12 +24,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        # fetch-tags is apparently broken so have to do it in next step https://github.com/actions/checkout/issues/1471
+        # with:
+          # fetch-tags: true
 
       - name: Set Variables
         run: |
+          git fetch
           VER=$(cat filebeat.target.version)
           echo "FILEBEAT_VERSION=$VER" >> $GITHUB_ENV
           LATEST_TAG=$(git tag -l "7.*" --sort=-taggerdate | head -n 1)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "FULL_IMAGE_NAME=$IMAGE_NAME:$LATEST_TAG" >> $GITHUB_ENV
 
       - name: Pull Image
