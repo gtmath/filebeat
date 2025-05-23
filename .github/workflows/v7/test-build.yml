@@ -1,0 +1,44 @@
+name: Filebeat v7 - Build and Scan
+
+on:
+  push:
+    branches:
+      - 7.17
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/filebeat
+
+jobs:
+
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      security-events: write
+      
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Variables
+        run: |
+          VER=$(cat filebeat.target.version)
+          echo "FILEBEAT_VERSION=$VER" >> $GITHUB_ENV
+          echo "FULL_IMAGE_NAME=$IMAGE_NAME:$VER" >> $GITHUB_ENV
+
+      - name: Build Image
+        run: docker build --build-arg FILEBEAT_VERSION=$FILEBEAT_VERSION . --file Dockerfile --tag $FULL_IMAGE_NAME"
+
+      - name: Docker Image Info
+        run: |
+          docker image ls
+
+      - name: Scan Image via Anchore Grype
+        uses: anchore/scan-action@v6
+        id: scan
+        with:
+          image: ${{ env.FULL_IMAGE_NAME }}
+          fail-build: true
+          severity-cutoff: high
+          grype-version: v0.92.0
+          output-format: table
