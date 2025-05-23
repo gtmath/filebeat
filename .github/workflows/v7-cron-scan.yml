@@ -3,7 +3,7 @@ name: Filebeat v7 - Scan Latest Image
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  "0 16 * * *"
+    - cron:  "10 16 * * *"
 
 defaults:
   run:
