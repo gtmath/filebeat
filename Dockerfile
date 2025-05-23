@@ -1,4 +1,5 @@
 FROM golang:1.23.8
+ENV CGO_ENABLED=0
 WORKDIR /go/src
 RUN git clone https://github.com/elastic/beats.git && cd beats && git checkout 7.17
 COPY go.mod /go/src/beats
