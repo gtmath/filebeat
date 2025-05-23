@@ -1,4 +1,4 @@
-name: Filebeat v7 - Build and Scan
+name: Filebeat v7 - Build & Scan
 
 on:
   push:
