@@ -5,6 +5,11 @@ on:
     branches:
       - 7.17
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./v7
+
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/filebeat
 
