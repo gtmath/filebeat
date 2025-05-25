@@ -30,7 +30,7 @@ jobs:
 
       - name: Set Variables
         run: |
-          git fetch
+          git fetch --tags
           VER=$(cat filebeat.target.version)
           echo "FILEBEAT_VERSION=$VER" >> $GITHUB_ENV
           LATEST_TAG=$(git tag -l "7.*" --sort=-taggerdate | head -n 1)
