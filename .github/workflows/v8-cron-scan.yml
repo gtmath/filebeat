@@ -1,0 +1,55 @@
+name: Filebeat v8 - Scan Latest Image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  "0 15 * * *"
+
+defaults:
+  run:
+    working-directory: ./v8
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/filebeat
+
+jobs:
+
+  scan:
+    name: Daily Scan of Latest v8 Tag
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+        # fetch-tags is apparently broken so have to do it in next step https://github.com/actions/checkout/issues/1471
+        # with:
+          # fetch-tags: true
+
+      - name: Set Variables
+        run: |
+          git fetch --tags
+          VER=$(cat filebeat.target.version)
+          echo "FILEBEAT_VERSION=$VER" >> $GITHUB_ENV
+          LATEST_TAG=$(git tag -l "8.*" --sort=-taggerdate | head -n 1)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "FULL_IMAGE_NAME=$IMAGE_NAME:$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Pull Image
+        run: docker pull $FULL_IMAGE_NAME
+
+      - name: Docker Image Info
+        run: |
+          docker image ls
+
+      - name: Scan Image via Anchore Grype
+        uses: anchore/scan-action@v6
+        id: scan
+        with:
+          image: ${{ env.FULL_IMAGE_NAME }}
+          fail-build: true
+          severity-cutoff: high
+          grype-version: v0.92.0
+          output-format: table

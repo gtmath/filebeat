@@ -1,3 +1,6 @@
 [submodule "v7/beats-v7"]
 	path = v7/beats-v7
 	url = https://github.com/elastic/beats.git
+[submodule "v8/beats-v8"]
+	path = v8/beats-v8
+	url = https://github.com/elastic/beats.git
