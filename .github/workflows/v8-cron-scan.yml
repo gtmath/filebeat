@@ -33,7 +33,7 @@ jobs:
           git fetch --tags
           VER=$(cat filebeat.target.version)
           echo "FILEBEAT_VERSION=$VER" >> $GITHUB_ENV
-          LATEST_TAG=$(git tag -l "8.*" --sort=-taggerdate | head -n 1)
+          LATEST_TAG=$(git tag -l "8.*" --sort=-creatordate | head -n 1)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "FULL_IMAGE_NAME=$IMAGE_NAME:$LATEST_TAG" >> $GITHUB_ENV
 
