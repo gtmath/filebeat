@@ -1,6 +1,6 @@
 ARG FILEBEAT_VERSION
 
-FROM golang:1.23.8
+FROM golang:1.23.10
 ENV CGO_ENABLED=0
 COPY beats-v7 /go/src/beats
 COPY go.mod /go/src/beats
